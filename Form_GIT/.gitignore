@@ -1,0 +1,23 @@
+/.quarto/
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Les repertoires suivants
+formation-git_files/
+_output/
+/.quarto/
+/_site/
+/img/excalidraw/
+
+# Les fichiers suivants
+*.html
+!docs/*.html
+*.tex
+*.log
+*.sty
+*.docx
+*.odt
+
+**/*.quarto_ipynb

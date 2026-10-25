@@ -1,0 +1,522 @@
+# Les branches {.backgroundTitre}
+
+## Définition des branches
+
+![](img/schema_vaches_branches_git.png)
+
+## Quand créer une branche ?
+
+<br>
+**On crée une branche** pour :  
+
+- Continuer le développement de manière isolée sans altérer le reste du dépôt  
+  - Pour **corriger un bug**  
+  - Pour **implémenter une nouvelle fonctionnalité**  
+  - Pour **refactorer le code**...
+
+- Isoler les différentes étapes du développement (une branche = un environnement)
+
+## Noms des branches
+
+Concernant le noms des branches, une bonne pratique est d'utiliser la structure suivante : `<categorie>-<nom>`
+
+| Catégorie | Signification                                       |
+|-----------|-----------------------------------------------------|
+| hotfix    | Pour résoudre rapidement des problèmes critiques    |
+| bugfix    | Pour résoudre des erreurs/bugs                      |
+| feature   | Pour ajouter/supprimer/modifier des fonctionnalités |
+| test      | Pour tester une idée expérimentale (hors issue)     |
+| issue-X   | Pour faire référence à l'issue n°X                  |
+
+
+## Fermer une issue à partir d'une branche
+
+Avec les forges Gitlab et Github, la fermeture des issues peut être **automatiquement gérée via les messages de commit**.  
+
+Pour cela, vous pouvez utiliser des [mots-clés](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically) comme (au choix) :    
+- `Close`  
+- `Fix`  
+- `Resolve`    
+- `Implement`   
+  
+En précisant le `#numero-issue`.  
+
+Exemple de message de commit : 
+
+``` 
+feat: Ajout documentation utilisateurs
+
+Close #31, en lien avec #29
+```
+
+## Organisation au DEMESIS
+
+![](img/modele_branches.png){fig-align="center"}
+
+
+## Que deviennent les branches ?
+
+<br>
+
+**Les branches permanentes** persistent tout au long de la vie du projet.  
+
+**Les branches temporaires** :  
+
+- Apparaissent et disparaissent au fil de la vie du projet  
+- Ont une durée de vie limitée...    
+- ... et doivent donc être détruites (manuellement ou suite à une fusion)  
+
+## Savoir sur quelle branche on se situe
+
+::: columns
+::: {.column width="50%"}
+![](img/icone_rstudio.png){fig-align="center"}  
+
+RStudio indique la branche sur laquelle on se situe en haut à droite de l'onglet "Git" :  
+
+![](img/git_rstudio_get_active_branche.png){fig-align="center"}  
+:::
+
+::: {.column width="50%"}
+![](img/icone_terminal.png){fig-align="center"}  
+
+`git status` est la commande la plus simple
+
+![](img/git_status_branche.png){fig-align="center"} 
+
+:::
+
+::::
+
+## Lister les branches
+
+::: columns
+::: {.column width="50%"}
+
+![](img/icone_rstudio.png){fig-align="center"}
+
+Cliquer sur la petite flèche située à côté du nom de la branche courante :  
+
+![](img/git_rstudio_liste_branches.png){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+
+![](img/icone_terminal.png){fig-align="center"}
+
+- Pour afficher uniquement les branches locales
+
+`git branch`
+
+- Pour afficher les branches locales et distantes
+
+`git branch -a`
+
+:::
+
+::::
+
+## Liste des branches et position sur les branches
+
+Lorsqu'on affiche la liste des branches, la branche sur laquelle on se situe est identifiée avec un astérisque * devant.  
+
+
+![](img/git_note_active_branche.png){width=600}
+
+
+## Créer une nouvelle branche avec RStudio ![](img/icone_rstudio.png)
+
+Pour créer une nouvelle branche avec RStudio, il faut :  
+
+- Cliquer sur le bouton "Nouvelle branche" dans l'onglet Git  
+
+![](img/nouvelle_branche_rstudio.png){fig-align="center"}
+
+- Renseigner le nom de la nouvelle branche  
+
+![](img/creer_branche_rstudio.png){fig-align="center"}
+  
+Cette procédure va créer la nouvelle branche **à la fois sur le dépôt local  mais aussi sur le dépôt distant.**  
+
+
+## Créer une nouvelle branche à partir de Gitlab ![](img/icone_gitlab.png)
+
+::: columns
+::: {.column width="50%"}
+Depuis l'interface Gitlab, on peut créer une branche depuis la page d'accueil du dépôt :  
+
+![](img/gitlab_nouvelle_branche_simplement.png){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+Depuis l'interface Gitlab et à partir d'une issue, on peut aussi créer une branche :  
+
+![](img/gitlab_creer_branch_depuis_issue.png){fig-align="center"}
+:::
+
+::::
+
+
+Pour récupérer cette branche distante dans votre dépôt local, on fera un `git pull` dans le terminal ou RStudio.  
+
+![](img/gitlab_pull_branche_cree_dans_issue.png){fig-align="center"}
+
+
+## Créer une nouvelle branche avec le terminal ![](img/icone_terminal.png)
+
+**Pour créer une branche dans le dépôt local** avec le terminal, les commandes `git branch` et `git checkout` sont utilisées.  
+
+Créer une nouvelle branche "bugfix" dans le dépôt local :  
+`git branch bugfix`  
+  
+Créer une nouvelle branche "bugfix" dans le dépôt local et se placer dessus :  
+`git checkout -b bugfix`  
+  
+Synchroniser la nouvelle branche locale "bugfix" avec la branche distante :   
+`git push -u origin bugfix`
+
+
+## Changer de branche
+
+::: columns
+
+::: {.column width="50%"}
+![](img/icone_rstudio.png){fig-align="center"}
+
+![](img/git_rstudio_changement_branche.png){fig-align="center"}
+
+:::
+
+::: {.column width="50%"}
+![](img/icone_terminal.png){fig-align="center"}
+
+Avec la commande dans le terminal :  
+
+`git checkout nom-de-branche`
+:::
+
+::::
+
+
+## Supprimer des branches locales
+
+::: columns
+
+::: {.column width="50%"}
+![](img/icone_rstudio.png){fig-align="center"}
+
+Avec l'IHM RStudio, on ne peut pas supprimer de branches locales.  
+:::
+
+::: {.column width="50%"}
+![](img/icone_terminal.png){fig-align="center"}
+
+Avec la commande dans le terminal :  
+
+`git branch -d nom-de-branche`
+:::
+
+::::
+
+<br>
+
+::: {.callout-important}
+Git empêche la suppression de branche si vous êtes positionnés dessus. 
+Dans ce cas, il faut au préalable changer de branche avec `git checkout nom-de-branche`
+:::
+
+## Supprimer des branches distantes
+
+::: columns
+
+::: {.column width="50%"}
+![](img/icone_rstudio.png){fig-align="center"}
+
+Avec l'IHM RStudio, on ne peut pas supprimer de branches distantes.  
+:::
+
+::: {.column width="50%"}
+![](img/icone_terminal.png){fig-align="center"}
+
+`git push origin --delete nom-de-branche`
+OU  
+`git fetch --prune`
+:::
+
+::::
+
+<br>
+
+<u>[GitLab permet de protéger les branches spécifiques en empêchant les utilisateurs non autorisés de les modifier.]{.small}</u>  
+Pour choisir les branches protégées, se rendre dans le bandeau de gauche `>settings` puis `Repository` et dérouler le menu `Branche rules`.  
+Puis sélectionner la ou les branches à protéger (voir [cette page](https://docs.gitlab.com/ee/user/project/protected_branches.html) pour en savoir plus sur ce qu'il est possible de faire avec les branches protégées.)
+
+![](img/gitlab_branche_protegee.png){fig-align="center"}
+
+
+## Fusionner deux branches 
+
+<p style="text-align: center;">[Une fois les changements effectués sur votre branche de travail, on effectue 
+**une fusion de branche** pour rapatrier ces modifications sur une branche permanente.]{.Jaune_moutarde1}</p>   
+
+**Dans le cadre d'un travail collectif, les fusions permettent à plusieurs membres d'une équipe de combiner leur travail.**  
+
+![](img/icone_rstudio.png) **Avec RStudio** on ne peut pas fusionner 2 branches    
+
+![](img/icone_terminal.png) **Avec le terminal** on peut fusionner 2 branches.  
+Par exemple :  
+
+  1. On se place sur la branche de developpement : `git checkout developpement`  
+  2. On la fusionne avec la branche de travail : `git merge branche-de-travail`  
+  3. On pousse sur le dépôt distant : `git push origin developpement`  
+  4. On supprime la branche de travail locale : `git branch -d branche-de-travail`  
+
+## Fusionner deux branches avec Gitlab (1/3) ![](img/icone_gitlab.png)
+
+[Il est conseillé de passer par Gitlab pour effectuer les fusions de branches.]{.Terre_battue2}  
+Sous Gitlab, elle se nomment **merge request** (et **pull request** sous Github).  
+
+::: columns
+
+::: {.column width="25%"}
+
+Cliquer sur "Merge requests" dans le menu de gauche :  
+
+![](img/gitlab_merge_request.png){fig-align="center"}
+
+:::
+
+::: {.column width="75%"}
+
+Puis selon l'endroit par lequel vous passez, cliquer sur l'un des boutons suivants :  
+
+![](img/gitlab_bouton_create_merge_request.png){fig-align="center"} ou ![](img/gitlab_bouton_new_merge_request.png){fig-align="center"}
+
+Choisir la branche source et la branche cible :  
+
+![](img/gitlab_merge_request_choix_branches.png){fig-align="center"}
+
+:::
+
+::::
+
+## Fusionner deux branches avec Gitlab (2/3) ![](img/icone_gitlab.png)
+
+![](img/gitlab_merge_request_infos_fenetre1.png){fig-align="center"}
+
+## Fusionner deux branches avec Gitlab (3/3) ![](img/icone_gitlab.png)
+
+![](img/gitlab_merge_request_infos_fenetre2.png){fig-align="center"} 
+
+## Les relectures ou revues de code avec Gitlab (1/2) ![](img/icone_gitlab.png)
+
+Les fusions de branches sont aussi l'occasion d'effectuer des [revues de code](https://docs.gitlab.com/ee/user/project/merge_requests/reviews/) entre les membres de l'équipe projet.  
+
+![](img/gitlab_merge_request_ajout_commentaire.png){fig-align="center"} 
+
+## Les relectures ou revues de code avec Gitlab (2/2) ![](img/icone_gitlab.png)
+
+![](img/gitlab_merge_request_finir_review.png){fig-align="center"} 
+
+## Effectuer le merge avec Gitlab ![](img/icone_gitlab.png)
+
+Une fois la revue de code effectuée (pas obligatoire), appuyer sur le bouton "Merge" pour valider la fusion :  
+
+![](img/gitlab_merge_request_bouton_merge.png){fig-align="center"} 
+
+::: callout-important
+Après avoir effectué la fusion sur gitlab, ne pas oublier de faire un `git pull` dans votre working directory afin de rapatrier les changements issus du merge !
+:::
+
+## Stratégies de fusion
+
+Sans rentrer dans le détail, il existe 2 principales stratégies de merge dans Git :  
+
+- le `fast-forward-merge` ou `merge rapide` : utilisée principalement pour la **correction de petites fonctionnalités**   
+Il a lieu lorsque le chemin entre la pointe de la branche-de-travail et la branche permanente **est linéaire**.
+
+- le `3-way-merge` ou `merge à 3 sources` : utilisée pour l'intégration de **fonctionnalités de plus long terme**  
+Il a lieu lorsque la branche permanente a été modifiée pendant les développements effectués sur la branche-de-travail.
+
+Pour en savoir plus, consulter [cette page](https://www.atlassian.com/fr/git/tutorials/using-branches/git-merge) très complète sur le sujet et en français.  
+
+
+## Définition des conflits
+
+Les conflits surviennent généralement lorsque [**deux personnes ont modifié les mêmes lignes dans un fichier**]{.souligneRouge}, ou si par exemple un développeur a supprimé un fichier alors qu'un autre développeur le modifiait.  
+
+Dans ces cas, [**Git ne peut pas déterminer automatiquement la version correcte**]{.souligneRouge}   
+
+<br>
+Comportement de Git lors d'un conflit :  
+- **Les conflits n'affectent que le développeur qui effectue le merge**  
+- Les autres membres de l'équipe ne sont pas conscients du conflit.  
+- Git marquera le fichier comme étant en conflit et [bloquera le processus de merge.]{.souligneRouge}   
+
+=> **Il incombe alors aux développeurs de résoudre le conflit.**
+
+<br>
+
+*Source:* [Atlassian](https://www.atlassian.com/fr/git/tutorials/using-branches/merge-conflicts)
+
+
+## Gérer les conflits (1/2)
+
+Que ce soit avec le terminal ou sur Gitlab, le (seul) avantage des conflits est qu'on est vite avertis :)  
+
+::: columns
+::: {.column width="50%"}
+![](img/icone_terminal.png){fig-align="center"}
+
+![](img/terminal_merge_conflit.png){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+![](img/icone_gitlab.png){fig-align="center"}
+
+![](img/gitlab_conflits.png){fig-align="center"}
+:::
+
+::::
+
+Et si jamais cela ne suffisait pas, **Gitlab nous envoie un mail** pour nous dire qu'une fusion n'a pas pu avoir lieu.
+
+## Gérer les conflits (2/2)
+
+Gitlab nous propose 2 façons de résoudre les conflits, soit localement (ce qui correspond à la procédure à suivre avec le terminal) soit directement dans l'interface de Gitlab :  
+
+
+![](img/gitlab_boutons_resolution_conflits.png){width=500}
+
+- **La résolution sur Gitlab :**  
+Cela signifie que l'arbitrage par l'équipe projet se fait directement sur l'interface Gitlab. Il s'agira ensuite de récupérer ces modifications sur le dépôt local.  
+
+- **La résolution locale :**  
+Cela signifie que l'on rapatrie dans son working directory les fichiers tels qu'ils sont en cours lors de la fusion. Après arbitrage de l'équipe projet sur les lignes de code à retenir, il s'agit ensuite de pousser la modification sur le dépôt distant.  
+=> [Dans ce cas, on utilisera le terminal]{.red}  
+
+
+## Délimiter les conflits
+
+**Pour délimiter la zone de conflit, Git utilise les marqueurs et annotations suivantes :**  
+
+- La ligne qui commence par <<<<<<< marque le début de la zone conflictuelle.  
+- Le marqueur ======= représente la frontière entre les deux zones à fusionner.  
+- La ligne qui commence par >>>>>>> délimite la fin de la zone conflictuelle.  
+
+Exemple d'affichage d'un conflit :  
+
+```r
+<<<<<<< HEAD
+library(tidyverse)
+=======
+library(tidyr)
+>>>>>>> bugfix-tidyr
+```
+
+::: {.callout-note}
+Pour identifier les conflits pendant un merge, la commande `git status` est très utile.  
+:::
+
+## Résoudre les conflits sur Gitlab ![](img/icone_gitlab.png)
+Pour les **"petits" conflits**, il est conseillé d'utiliser **Gitlab** (surtout pour les novices en Git).  
+
+![](img/gitlab_resolution_conflit.png){fig-align="center"} 
+
+![](img/gitlab_resolution_conflit_message_errone.png){fig-align="center"} 
+
+## Résoudre les conflits localement avec le terminal ![](img/icone_terminal.png)
+
+Pour résoudre **des conflits qui ont lieu sur plusieurs fichiers**, rapatrier les fichiers localement avec le terminal **pour les analyser sur RStudio** peut être une bonne idée.  
+<br>
+[Cependant les instructions proposées par Gitlab ne fonctionnent pas tout le temps.]{.red}  
+Le DEMESIS vous propose de suivre la procédure suivante dans ce cas :
+
+```bash
+git checkout branche-de-travail
+git pull origin main
+git status
+# Arbitrer dans le code : 
+# Supprimer les marqueurs de conflit à la main soit :
+# Pour conserver la version distante, utiliser la commande : git checkout --theirs nom-du-fichier.
+# Pour conserver la version locale, utiliser la commande : git checkout --ours nom-du-fichier.
+git status
+git add .
+git commit -m "Résolution conflit"
+git push origin banche-de-travail
+```
+=> Puis retourner sur Gitlab, rafraîchir la page de la merge request et le bouton de "merge" n'est plus bloqué ! {{< fa face-grin-hearts >}}
+
+
+## Gérer les conflits (5/5)
+
+Après une fusion, on peut **supprimer les branches temporaires** qu'elles soient distantes ou locales.  
+
+- Pour **les branches distantes**, elles sont supprimées dès lors que cette case est cochée dans Gitlab (sinon voir [ici](#supprimer-des-branches-distantes)) : 
+
+![](img/gitlab_case_delete_source_branch.png){fig-align="center"} 
+
+- Pour supprimer **les branches locales** devenues inutiles, voir [ici](#supprimer-des-branches-locales)
+
+
+## Éviter au maximum les conflits
+
+**Quelques conseils :**  
+
+- S'interroger sur la question de l'intersection des modifications et des fichiers potentiellement impactés lors de la planification des tâches
+- Communiquer avec les autres membre de l'équipe pour dire qui travaille sur quoi
+- La durée de vie des branches doit être la plus courte possible
+- Modulariser son code (par ex. sous forme de fonctions)  
+- Résoudre les conflits le plus tôt possible et ne pas laisser la situation empirer.  
+- Faire des "bons" commits fréquemment
+
+## Exercice 5
+
+::: {.callout-tip icon=false}
+## Exercice 5 - Simulation d'un conflit
+
+Reprendre [l'exercice 4](#exercice-4)
+
+- Dans votre projet R, créer 2 branches `bugfix-tidyverse` et `bugfix-tidyr`  
+<br>
+- Se positionner sur la branche `bugfix-tidyverse` et corriger le script `Analyse.R` en modifiant l'unique ligne avec `library(tidyverse)`.   
+- Pousser la branche `bugfix-tidyverse` et la fusionner avec la branche permanente sur Gitlab (en supprimant la branche distante `bugfix-tidyverse`).  
+- Récupérer les résultats du merge dans le dépôt local sur votre branche permanente/principale.  
+- Supprimer la branche locale `bugfix-tidyverse` qui n'est plus utile  
+- Se positionner maintenant sur la branche `bugfix-tidyr` et corriger le script `Analyse.R` en modifiant l'unique ligne avec `library(tidyr)`.  
+<br>
+- Pousser la branche `bugfix-tidyr` et la fusionner avec la branche permanente sur Gitlab.  
+- Normalement vous devriez faire face à un joli conflit {{< fa face-laugh >}}
+- Résoudre le conflit
+:::
+
+*Source :* exercice issue de [cet article de blog](https://blog.microlinux.fr/formation-git-11-conflits/)
+
+## Exercice 6 collectif (1/2)
+
+::: {.callout-tip icon=false}
+## Exercice 6 (facultatif)
+
+1. Se mettre par groupes de 2/3 personnes (qui appartiennet au même groupe sous Gitlab) :
+  – une personne aura la responsabilité d’être mainteneur
+  – une à deux personnes seront développeurs
+2. Le mainteneur crée un dépôt sur Gitlab ; il/elle donne des droits aux développeurs du projet.
+3. Chaque personne du groupe crée une copie locale (clone) du projet sous Cerise  
+4. Créer un fichier votre_nom-votre_prenom.md, écrire trois phrases de son choix, puis commit et pousse les modifications
+
+:::
+
+## Exercice 6 collectif (2/2)
+
+::: {.callout-tip icon=false}
+## Exercice 6 (facultatif)
+
+**A ce stade, une seule personne (la plus rapide) devrait ne pas avoir rencontré de rejet du push.** C’est normal ! Avant d’accepter une modification, Git vérifie en premier lieu la cohérence de la branche avec le dépôt distant. Le premier ayant fait un push a modifié le dépôt commun ; les autres doivent intégrer ces modifications dans leur version locale (pull) avant d’avoir le droit de proposer un changement.
+
+5. Pour ceux dont le push a été refusé, effectuer un pull des modifications distantes
+6. Dans RStudio, afficher l’historique du projet et regarder la manière dont ont été intégrées les modifications des collaborateurs
+7. Effectuer à nouveau un push de vos modifications locales
+8. Les derniers membres du groupe devront refaire les étapes précédentes, potentiellement plusieurs fois, pour pouvoir push les modifications locales
+:::
+
+*Source :* exercice issue de [ce support de formation](https://inseefrlab.github.io/formation-bonnes-pratiques-git-R/slides/complete.html#/application-4) d'[@Inseefrlab](https://github.com/InseeFrLab)

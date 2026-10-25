@@ -1,0 +1,68 @@
+# Pourquoi Git ? {.backgroundTitre}
+
+## Le versioning
+
+### Principe général :
+
+Le versioning consiste à conserver la version d'une entité logicielle quelconque 
+de façon à pouvoir la retrouver facilement même après l'apparition et la mise 
+en place de versions plus récentes.
+
+### Sans outil de versioning
+
+Exemple de ce que l'on peut trouver sur un server :  
+
+![](img/cerise_sans_versionning.png)
+
+## Avantages du versioning
+
+**Le versioning permet de :**  
+
+- Obtenir de **la traçabilité** : on sait qui a changé quoi, quand, comment et pourquoi  
+- **Travailler collectivement** sur les mêmes programmes **en même temps**  
+- **L'expérimentation** lors des développements sans risques (à l'aide des branches)   
+- Faire de la **relecture** (revues de codes...)    
+- **Revenir en arrière**  
+
+**Avec une forge, il permet en plus de :**  
+
+- D'archiver le code  
+- D'apporter de la visibilité à vos projets  
+
+**=> Un usage qui se justifie même quand on est tout seul sur un projet !** 
+
+## Git
+
+Parmi les logiciels de versioning existants, Git est le plus populaire depuis quelques années :
+
+
+[What are the primary version control systems you use?]{.bolder}
+
+![](img/git_popularity.png){width=1200}
+
+Source : [Stackoverflow](https://survey.stackoverflow.co/2022/#version-control-version-control-system)
+
+## À propos de Git
+
+Git est un logiciel libre de versioning.
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+Créé en 2005 par [Linus Torvalds](https://fr.wikipedia.org/wiki/Linus_Torvalds) et utilisé pour le code source de Linux.  
+
+- Codé en C  
+
+- Plus de 1 400 000 commits en mars 2026 !
+
+:::
+
+::: {.column width="30%"}
+
+![](img/Linus_Torvalds.jpg)
+
+*Source : Wikipédia*
+:::
+
+::::

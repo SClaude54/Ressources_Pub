@@ -1,0 +1,586 @@
+# Travailler avec une forge {.backgroundTitre}
+
+## Git - un modèle distribué
+
+-   **Dépôt local** : dépôt de l'agent sur son espace de travail (sous
+    Cerise ou en local par ex.)
+-   **Dépôt distant (remote)** : dépôt correspondant situé sur la forge.
+
+::: callout-note
+## Convention
+
+Par défaut, le dépôt distant porte l'alias `origin`
+:::
+
+![](img/git_distributed.png){fig-align="center"}
+
+## Architecture générale
+
+![](img/architecture_git_MASA.png){fig-align="center"}
+
+## C'est quoi une forge ?
+
+Définition Wikipédia :  
+
+[En informatique, une forge est un système de gestion et de maintenance collaborative de texte.]{.bolder}
+
+[C'est un espace où on peut archiver du code informatique]{.souligneRouge} (R mais pas que bien sûr) qui offre des fonctionnalités supplémentaires à Git comme :
+
+- la **gestion des tickets** (issues) ;  
+- les **merge requests ou pull requests** ;
+- **un affichage** plus agréable du dépôt **avec une interface web** ;  
+- la possibilité d'ajouter **un wiki** ;  
+- **l'intégration et le déploiement continus**...
+
+## Exemples de forges
+
+Les plus connues : [Gitlab](https://gitlab.com), [Github](https://github.com), [Bitbucket](https://bitbucket.org)...
+
+Une forge peut être **interne** ou **externe** à un ministère.
+
+- URL de la forge interne du MAASA : [https://gitlab.forge.agriculture.rie.gouv.fr/](https://gitlab.forge.agriculture.rie.gouv.fr/)  
+
+- URL de la forge interne du MTECT : [https://gitlab-forge.din.developpement-durable.gouv.fr/](https://gitlab-forge.din.developpement-durable.gouv.fr/)  
+
+- URL du SSM Agriculture (SSP) sur Github : [https://github.com/SSM-Agriculture](https://github.com/SSM-Agriculture)  
+
+- URL du MTECT sur Github : [https://github.com/MTES-MCT](https://github.com/MTES-MCT)
+
+::: callout-note
+## À retenir ! 
+
+- Les forges externes ont vocation à héberger les projets open-source. 
+Il s'agit donc d'être très vigilant sur le code déposé sur ces forges
+:::
+
+## Dialoguer avec Gitlab ![](img/icone_gitlab.png)
+
+Pour travailler avec Gitlab, il faut mettre en place un mode d'authentification.  
+
+2 modes principaux existent : 
+
+- `SSH`  
+- `HTTPS`  
+
+Au MAASA, [une procédure de configuration existe et a été validée en mars 2024](https://orion.agriculture/confluence/pages/viewpage.action?pageId=1068303025) 
+pour établir la connexion entre Cerise et la forge gitlab interne. 
+Celle-ci est basée sur le mode `HTTPS` et utilise le credential helper de Git qui 
+évite d'avoir à re-saisir son mot de passe (ou token) à chaque action.
+
+## Les groupes dans les forges Gitlab ![](img/icone_gitlab.png)
+
+- Une forge Gitlab est structurée par **groupe**.  
+- Chaque **groupe** est constitué de **projets** (les fameux dépôts distants).  
+- Chaque **groupe** est associé à des utilisateurs dont chacun dispose **d'un niveau 
+de permissions** sur les projets du groupe et sur le groupe lui-même.  
+
+::: columns
+::: {.column width="30%"}
+Aperçu des groupes au MAASA/SSP :
+:::
+
+::: {.column width="70%"}
+![](img/gitlab_groupes_ssp.png){fig-align="center"}
+:::
+
+::::
+
+## Permissions et rôles dans Gitlab ![](img/icone_gitlab.png)
+
+- Les **permissions** se traduisent par plusieurs **rôles** qui sont détaillés dans la 
+[documentation de Gitlab](https://docs.gitlab.com/ee/user/permissions.html#project-members-permissions).  
+
+Ce qu'il faut retenir :  
+
+| Rôle | Permissions |
+| :--- | :--- |
+| **Owner** | Les propriétaires ont un contrôle total sur le projet ou le groupe, y compris la gestion des membres et la suppression. |
+| **Maintainer** | Les mainteneurs ont des droits similaires aux propriétaires, mais n'ont pas accès à l'intégralité des paramètres sensibles du projet/groupe. |
+| **Developer** | Les développeurs ont des droits d'écriture sur le code, peuvent créer des branches et fusionner des Merge Requests. |
+| **Planner** | Les planificateurs se concentrent sur la gestion : ils peuvent gérer les tickets (issues), les tableaux de bord et les jalons, mais n'ont pas accès au code source. |
+| **Reporter** | Les rapporteurs ont des droits de lecture sur le projet. Ils peuvent voir le code et créer des tickets, mais ne peuvent pas modifier le dépôt. |
+| **Guest** | Les invités ont des droits très limités (lecture seule sur les tickets) et n'ont généralement pas accès au contenu du code source. |
+
+
+## Bonnes pratiques avec les forges
+
+Voici ci-dessous **quelques bonnes pratiques** (non exhaustives) à ajouter à un projet R **lorsque celui-ci est amené à être partagé sur une forge** (Gitlab ou Github ou autre).  
+
+::: {.callout-note icon=false}
+## Dans l'idéal votre projet doit contenir :  
+
+- Un fichier `README.md` : un document rédigé en [markdown](https://www.markdownguide.org/) qui inclue notamment des informations sur :
+  - Ce que le projet fait
+  - Son emplacement sous Cerise
+  - Ses pré-requis et son utilisation/installation (par exemple s'il s'agit d'une application Shiny, les instructions de lancement ou s'il s'agit d'un package R, les instructions d'installation...)
+  - Ses principales fonctionnalités
+  - L'identité de l'équipe qui maintient le dépôt
+  
+- Un fichier `.gitignore` (voir [cette diapo](#quest-ce-quon-ne-versionne-pas-12))
+
+- Un fichier `CHANGELOG.md` ou `NEWS.md` : lui aussi rédigé avec markdown, il permet de suivre les principales modifications apportées au projet par les développeurs. Il est très utile en association avec les [tags](#créer-des-tags-avec-gitlab).
+:::
+
+## Le système de ticketing (issues)
+
+**Une issue est une tâche à effectuer** : il peut s’agir tout autant de correctifs à apporter au projet que de fonctionnalités à ajouter.  
+
+Ouvrir une issue depuis Gitlab permet de :   
+
+– **Discuter un point** : il est possible d’échanger à plusieurs dans une
+issue pour définir comment la traiter.  
+– **Assigner une tâche à une personne** : lorsqu’on crée une issue, on
+peut assigner la tâche à une ou plusieurs personnes. Elle s’affiche
+alors sur le tableau de bord.  
+– **Définir une échéance, classer une issue avec un label** : le tableau de
+bord permet alors d’avoir une vision complète des issues en cours.  
+
+## Activer les issues sur la forge interne du MAASA ![](img/icone_gitlab.png)
+
+Par défaut, les issues ne sont pas activées à la création d'un dépôt sur la forge Gitlab du MAASA.  
+
+Pour les activer, il faut :  
+
+- Cliquer sur `Settings` dans le bandeau de gauche puis `General` 
+- Cliquer sur le bouton **Expand** à côté de `Visibility, project features, permissions`  
+- Activer les issues :  
+
+![](img/activer_issues.png){fig-align="center"}
+
+- Enregistrer les changements :
+
+![](img/activer_issues_valider.png){fig-align="center"}
+
+## Créer une issue ![](img/icone_gitlab.png)
+
+::: columns
+::: {.column width="25%"}
+![](img/gitlab_creer_issue.png){fig-align="center"}
+![](img/gitlab_creer_issue_bouton.png){fig-align="center"}
+
+:::
+::: {.column width="75%"}
+Puis renseigner les informations concernant l'issue. 
+
+![](img/gitlab_creer_issue_page.png){fig-align="center"}
+
+:::
+
+::::
+
+## Afficher les issues sous forme de tableau (board) ![](img/icone_gitlab.png)
+
+Si vous utilisez **des labels** pour classer vos issues, Gitlab propose un affichage sous forme de tableau de bord qui permet de faire **un suivi de projet sous forme de tâches (Kanban)**.  
+
+Exemple :  
+
+![](img/gitlab_creer_issue_board.png){fig-align="center"}
+
+## Lier un dépôt local à un dépôt distant (1/3)
+
+[**1ère étape commune à toutes les méthodes : création d'un dépôt vide sur la forge Gitlab**]{.souligneRouge}
+
+- Cliquez sur le bouton "New project" situé en haut à droite :  
+
+![](img/gitlab_nouveau_depot.png){fig-align="center"}
+
+- Choisir "blank project" :  
+
+![](img/gitlab_projet_vide.png){fig-align="center"}
+
+## Lier un dépôt local à un dépôt distant (2/3)
+
+- Renseigner le nom du projet, éventuellement une courte description, l'espace 
+d'appartenance du projet dans la forge, son niveau de visibilité et penser à 
+décocher l'option "Initialize repository with a README". Puis cliquer sur "Create Project".  
+
+![](img/gitlab_infos_projet.png){fig-align="center"}
+
+## Lier un dépôt local à un dépôt distant (3/3)
+
+<br>
+La méthode à utiliser est différente selon les cas :  
+
+1. **Vous voulez créer un nouveau répertoire** dans votre working directory  
+2. **Vous avez déjà un répertoire** dans votre working directory  
+
+<br>
+
+::: {.callout-note icon=false}
+## À retenir
+Pour vérifier qu'un dépôt local est lié à un dépôt distant, la commande du terminal `git remote -v` est très utile car elle renvoit l'URL du dépôt distant s'il existe.
+:::
+
+## Lier un dépôt local à un dépôt distant avec RStudio (1/5) ![](img/icone_rstudio.png)
+
+<br>
+
+[**CAS 1 : création d'un nouveau répertoire**]{.souligneRouge}
+
+Créer un nouveau projet, puis choisir "Contrôle de version" :  
+
+![](img/gitlab_rstudio_lier_projet.png){fig-align="center"}
+
+## Lier un dépôt local à un dépôt distant avec RStudio (2/5) ![](img/icone_rstudio.png)
+
+Puis choisir "Git" :  
+
+
+![](img/gitlab_rstudio_lier_gitlab_git.png){fig-align="center"}
+
+## Lier un dépôt local à un dépôt distant avec RStudio (3/5) ![](img/icone_rstudio.png)
+
+
+::: columns
+::: {.column width="60%"}
+Puis renseigner :  
+
+- L'URL du dépôt distant (voir ci-contre comment la récupérer) ->   
+- Le nom du répertoire du projet  
+- Le chemin du dépôt local dans votre espace de travail
+
+:::
+
+::: {.column width="40%"}
+![](img/gitlab_copier_coller_URL.png){fig-align="center"}
+:::
+
+::::
+
+![](img/gitlab_rstudio_lier_projet_URL.png){fig-align="center"}
+
+## Lier un dépôt local à un dépôt distant avec RStudio (4/5) ![](img/icone_rstudio.png)
+
+[**CAS 2 : un répertoire existe déjà**]{.souligneRouge}
+
+Dans ce cas, l'interface de RStudio est mal pensée et **il est beaucoup plus intuitif d'utiliser le terminal** (voir [ici](#lier-un-dépôt-local-à-un-dépôt-distant-avec-terminal-22))
+
+La fonctionnalité d'ajout d'un dépôt distant est accessible en cliquant sur le bouton "Nouvelle branche" :(  
+
+::: columns
+::: {.column width="50%"}
+![](img/gitlab_bouton_nouvelle_branche.png){fig-align="center"}
+
+Puis cliquer sur le bouton "Ajouter à distance" :  
+
+![](img/gitlab_ajouter_a_distance.png){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+Entrer l'alias origin et l'URL du dépôt distant :  
+
+![](img/gitlab_ajouter_a_distance_URL.png){fig-align="center"}
+
+Puis cliquer sur "Ajouter" puis "Annuler" sur l'écran précédent (on ne veut pas créer de nouvelle branche ici)
+:::
+
+::::
+
+## Lier un dépôt local à un dépôt distant avec RStudio (5/5) ![](img/icone_rstudio.png)
+
+Avec la procédure présentée dans le cas 2, les boutons "Git-pull" et "Git-push" apparaîssent en grisé et ne sont pas disponibles pour l'utilisateur :
+
+![](img/gitlab_rstudio_boutons_grises.png){fig-align="center"}
+
+Pour dégriser ces boutons, **le terminal est indispensable** pour taper la commande :  
+`git push -u <alias> <nom-branche>`  
+
+Puis en cliquant sur le bouton de rafraîchissement du l'onglet "Git" ![](img/rstudio_bouton_refresh.png)
+
+::: callout-note
+Pour information, le `-u` de la commande ci-dessus est nécessaire car dans le cas 2, aucune branche n'existe dans le dépôt local. Cette instruction permet simplement de créer une branche locale qui suit la branche distante existante sur le dépôt distant.
+
+![](img/rstudio_nouvelle_branche_synchro.png){fig-align="center"}
+:::
+
+## Lier un dépôt local à un dépôt distant avec terminal (1/2) ![](img/icone_terminal.png)...  
+<br>
+
+[**CAS 1 : création d'un nouveau répertoire**]{.souligneRouge}
+
+- Lancer le terminal dans le répertoire où on souhaite créer le nouveau dossier correspondant au dépôt distant (rappel sur [comment faire](#git-avec-le-terminal))  
+- Taper la commande `git clone <URL-depot-distant>`  
+  
+Par exemple :  
+`git clone https://gitlab.forge.agriculture.rie.gouv.fr/ssp/bac-a-sable/test-formation-git`  
+
+- Ouvrir le nouveau répertoire et commencer à y travailler comme d'habitude en y créant un projet, des scripts...  
+
+## Lier un dépôt local à un dépôt distant avec terminal (2/2) ![](img/icone_terminal.png)
+
+<br>
+
+[**CAS 2 : un répertoire existe déjà**]{.souligneRouge}
+
+- Lancer le terminal dans le répertoire que l'on souhaite lié au dépôt distant (rappel sur [comment faire](#git-avec-le-terminal))  
+- Taper la commande `git remote add origin <URL-depot-distant>`  
+  
+Par exemple :  
+`git remote add origin https://gitlab.forge.agriculture.rie.gouv.fr/ssp/bac-a-sable/test-formation-git`
+
+
+## Pousser les changements sur la forge avec RStudio ![](img/icone_rstudio.png)
+
+Après avoir ajouté vos changements à l'index et fait vos commits, vous pouvez **"pousser"** ces modifications sur la forge avec RStudio.  
+
+Dans l'exemple ci-dessous, après avoir committer une fois, RStudio me prévient dans l'onglet "Git" que je suis sur la branche `developpement` d'un commit :  
+
+![](img/git_rstudio_message_avant_push.png){fig-align="center"}
+
+**Pour pousser ce commit sur le dépôt distant**, il suffit simplement de cliquer sur le bouton ![](img/git_push_bouton.png){.inlineimage}
+
+## Pousser les changements sur la forge avec le terminal ![](img/icone_terminal.png)
+
+Voilà comment pousser vos modifications sur la forge avec le terminal :
+
+- Taper la commande `git status` pour récupérer l'information de la situation de notre dépôt local par rapport au dépôt distant.  
+
+![](img/git_message_terminal_avant_push.png){fig-align="center"}
+
+- Taper la commande `git push` **pour pousser ce commit sur le dépôt distant**.  
+
+![](img/git_push_terminal.png){fig-align="center"}
+
+## Utilisation des instructions `git push` et `git pull` ![](img/icone_terminal.png)
+
+Dans les slides précédentes, une utilisation succinte des instructions `git push` et `git pull` a été faite.  
+
+Pour être sûr de maîtriser vos interactions entre le dépôt local et le dépôt distant, il est recommandé d'utiliser la syntaxe plus complète sur le modèle suivant :  
+
+- `git push <alias> <nom-branche>`  
+- `git pull <alias> <nom-branche>`  
+
+Exemples :  
+- `git push origin developpement`  
+- `git pull origin production`  
+
+## Exercice 3
+
+::: {.callout-tip icon=false}
+## Exercice 3
+
+Reprendre [l'exercice 2](#exercice-2-22)
+
+- Aller sous dans la forge Gitlab dans le groupe « ssp/BAC-A-SABLE » 
+- Créer un dépôt vide dans ce groupe au format "prenom-nom-formation-git" dans la forge Gitlab  
+- Lier votre projet R à ce dépôt distant  
+- Poussez vos commits déjà effectués sur le dépôt distant  
+<br>
+- Apporter des changements dans un de vos scripts R (sauf `Analyse.R`) 
+- Ajouter vos changements à l'index, faire un nouveau commit et pousser sur le dépôt distant  
+<br>
+
+:::
+
+## Récupérer les changements en local avec RStudio ![](img/icone_rstudio.png)
+
+Pour récupérer sur le dépôt local des changements qui ont été poussés sur le dépôt distant avec RStudio.  
+
+[Exemples de cas d'usage :]{.souligneRouge}  
+- Si un membre de l'équipe projet a poussé des modifications avant vous sur le dépôt distant.  
+- Si vous voulez récupérer les dernières modifications apportées à la branche distante suite à une `merge request` (voir plus loin)  
+
+**Pour récupérer les commits depuis le dépôt distant**, il suffit simplement de cliquer sur le bouton ![](img/git_pull_bouton.png){.inlineimage}
+
+Dans le cas d'un travail en équipe, il s'agit d'une [opération à faire très fréquemment]{.souligneRouge}.  
+Git vous empêchera de pousser vos modifications sur le dépôt distant si vous n'avez pas au préalable récupérer toutes les dernières modifications qui s'y trouvent.
+
+**Message qui s'affiche dans ce cas :**  
+
+![](img/git_push_sans_pull.png){fig-align="center"}
+
+## Récupérer les changements en local avec le terminal ![](img/icone_terminal.png)
+
+- Taper la commande `git pull` **pour récupérer les derniers commits depuis dépôt distant**.  
+
+<br>
+
+![](img/git_pull_terminal.png){fig-align="center"}
+
+
+## Supprimer un dépôt dans Gitlab ![](img/icone_gitlab.png)
+
+- Si vous êtes owner du projet :  
+
+::: columns
+::: {.column width="25%"}
+![](img/gitlab_menu_general.png){fig-align="center"}
+:::
+::: {.column width="75%"}
+Descendre en bas de la page puis :  
+
+![](img/gitlab_suppression_projet.png){fig-align="center"}
+
+:::
+
+::::
+
+- Sinon, contacter la BAL : assistance.si-stat.sg@agriculture.gouv.fr.
+
+## Créer des tags avec le terminal ![](img/icone_terminal.png)
+
+Les tags sont des étiquettes qui pointent vers des points spécifiques dans l'historique de Git.  
+Ils sont très utiles pour étiqueter les versions de vos projets (v0.1, v0.2...).  
+
+Pour créer un tag v0.1 sur le dernier commit :  
+`git tag -a v0.1 -m "Message de tag"`  
+
+Pour créer un tag v0.1 a posteriori (avec l'ID du commit) :  
+`git tag -a v0.1 0af8bfd9 -m "Message de tag"`  
+
+Pour partager les tags sur le dépôt distant :  
+`git push origin --tags`
+
+Pour lister les tags :  
+`git tag`  
+
+## Créer des tags avec gitlab ![](img/icone_gitlab.png)
+
+::: columns
+::: {.column width="25%"}
+![](img/gitlab_ajout_tag.png){fig-align="center"}
+:::
+
+::: {.column width="75%"}
+![](img/gitlab_bouton_ajout_tag.png){fig-align="center"}
+
+![](img/gitlab_fenetre_ajout_tag.png){fig-align="center"}
+
+Il reste à faire un `git pull` pour récupérer le nouveau tag dans votre working directory.
+:::
+
+::::
+
+## Revenir en arrière avec Gitlab (1/3) ![](img/icone_gitlab.png)
+
+L'interface de Gitlab permet de facilement se déplacer dans l'historique d'un projet versionné.  
+
+Par exemple :  
+
+::: columns
+::: {.column width="25%"}
+
+![](img/gitlab_commits.png){fig-align="center"}
+
+:::
+
+::: {.column width="75%"}
+
+![](img/gitlab_historique_commits.png){fig-align="center"}
+:::
+
+::::
+
+
+## Revenir en arrière avec Gitlab (2/3) ![](img/icone_gitlab.png)
+
+Cliquer sur le commit d'intérêt et dans la fenêtre qui en détaille le contenu, cliquer sur "Browse file" :  
+
+![](img/gitlab_acces_detail_commit.png){fig-align="center"}
+
+## Revenir en arrière avec Gitlab (3/3) ![](img/icone_gitlab.png)
+
+On accède ainsi à l'état du projet tel qu'il était au moment du commit d'intérêt.  
+
+![](img/gitlab_etat_precedent.png){fig-align="center"}
+
+Remarque : des manipulations quasi-identiques permettent de faire la même chose avec les tags.
+
+## Revenir en arrière avec RStudio ![](img/icone_rstudio.png)
+
+Avec RStudio, en cliquant sur le bouton "Historique" : ![](img/rstudio_bouton_historique.png)  
+
+On accède aux différentes versions des fichiers qui ont été modifiés au fil du temps  
+[Remarque : avec RStudio il n'est pas possible de revenir en arrière sur l'ensemble du projet]{.red}  
+
+::: columns
+::: {.column width="50%"}
+![](img/rstudio_page_historique.png){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+![](img/rstudio_page_historique_vue_script.png){fig-align="center"}
+:::
+::::
+
+
+## Revenir en arrière avec le terminal ![](img/icone_terminal.png)
+
+Pour revenir à la version du tag v0.1 :  
+`git checkout v1.0`
+
+Pour revenir à la version du commit 0af8bfd9 :  
+`git checkout 0af8bfd9`
+
+Pour remonter de 4 commits dans le passé :  
+`git checkout nom-de-branche~4`
+
+Pour revenir au présent :  
+`git checkout nom-de-branche`
+
+::: callout-note
+Les instructions Git ci-dessus peuvent aussi se décliner sur un fichier spécifique.  
+Par exemple avec la structure suivante pour un commit et un fichier particulier : `git checkout commitID file-name`
+:::
+
+## Inverser un commit
+
+La commande `git revert SHA-commit` permet d'inverser/de défaire ce qui avait été 
+fait au moment du commit d'intérêt.  
+
+Attention, le `git revert` crée un nouveau commit (d'inversion c'est-à-dire que les lignes ajoutées 
+seront supprimées et les fichiers supprimés seront recréés...).  
+
+![](img/git_revert.png){fig-align="center"}
+
+## Si vous ne deviez retenir que quelques commandes ! ![](img/a_retenir.png)
+
++------------------------+----------------------------+----------------------------+
+| Action                 |![](img/icone_rstudio.png)  |![](img/icone_terminal.png) |
++:======================:+:==========================:+:==========================:+
+| Vous ajoutez vos       | Cochez les fichiers        | `git add`                  |
+| fichiers à l'index     |                            |                            |
++------------------------+----------------------------+----------------------------+
+| Vous committez vos     | Appuyez sur le bouton      | `git commit -              |
+| changements            | "Commit" et vous           | m "Votre message"`         |
+|                        | renseignez votre           |                            |
+|                        | message de commit          |                            |
++------------------------+----------------------------+----------------------------+
+| Vous envoyez vos       | Appuyez sur le bouton      | `git push origin           |
+| commits en local sur   | "Push"                     |  <nom-de-branche>`         |
+| le serveur distant     |                            |                            |
++------------------------+----------------------------+----------------------------+
+| **Supplément si vous   |                            |                            |
+| travaillez à plusieurs |                            |                            |
+| :**                    |                            |                            |
++------------------------+----------------------------+----------------------------+
+| Récupérer les          | Appuyez sur le bouton      | `git pull origin           |
+| éventuels commits de   | "Pull"                     |  <nom-de-branche>`         |
+| vos collègues          |                            |                            |
++------------------------+----------------------------+----------------------------+
+
+## Autres instructions Git
+
+Il y a encore pleins de concepts et d'instruction Git très utiles que vous découvrirez (ou pas) :
+
+- Le [fork](https://www.atlassian.com/fr/git/tutorials/comparing-workflows/forking-workflow) : travailler avec une copie d'un dépôt existant
+
+- [git cherry-pick](https://git-scm.com/docs/git-cherry-pick/fr) : sélectionner et appliquer un seul commit d'une branche à une autre  
+- [git stash](https://git-scm.com/docs/git-stash/fr) : mettre de côté les modifications d’un répertoire de travail  
+- [git blame](https://git-scm.com/docs/git-blame/fr) : montrer la révision et l’auteur qui ont modifié en dernier chaque ligne d’un fichier  
+- [git rebase](https://git-scm.com/book/fr/v2/Les-branches-avec-Git-Rebaser-Rebasing) : réappliquer une série de commits d'une branche sur une autre branche
+- [git bisect](https://git-scm.com/docs/git-bisect/fr) : trouver par recherche binaire la modification qui a introduit une erreur  
+...  
+
+## Exercice 4
+
+::: {.callout-tip icon=false}
+## Exercice 4
+
+Reprendre [l'exercice 3](#exercice-3)
+
+- Parcourir l’historique de votre dépôt distant avec Gitlab (les solutions avec RStudio et le terminal ont été abordées lors de l'exercice 2).  
+- Faire apparaître les différences entre deux versions consécutives du projet  
+- Afficher une version passée du projet (par exemple son état au 2ème commit)
+
+:::
