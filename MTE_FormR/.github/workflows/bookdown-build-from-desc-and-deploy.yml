@@ -1,0 +1,55 @@
+name: Build Bookdown from DESCRIPTION And Deploy With Docker Image
+
+on:
+  workflow_call:
+    inputs:
+      r_version:
+        required: true
+        type: string   
+
+jobs:
+  get-image-repository:
+    name: Get image repository
+    runs-on: ubuntu-latest
+    outputs:
+      image_repository: ${{ steps.lower_repo.outputs.image_repository }}
+    steps:
+    - id : lower_repo
+      name: set lower case repo name (Bug when repository is in UPPERCASE)
+      run: echo "image_repository=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+  bookdown:
+    name: Build and deploy bookdown
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GH_PAT }}
+    needs: get-image-repository
+    container:  ghcr.io/${{ needs.get-image-repository.outputs.image_repository }}-${{ inputs.r_version }}:latest
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Install pak
+      run: Rscript -e 'Sys.info();install.packages("pak")'
+      
+    - name: Install packages from DESCRIPTION
+      run: Rscript -e "pak::local_install_deps(upgrade = FALSE, ask = FALSE)"
+
+    - name: Cache bookdown results
+      uses: actions/cache@v5
+      with:
+        path: _bookdown_files
+        key: bookdown-${{ hashFiles('**/*Rmd') }}
+        restore-keys: bookdown-
+
+    - name: Build site
+      run: Rscript -e 'bookdown::render_book("index.Rmd", quiet = FALSE)'
+      
+    - name: Rsync install (Deploy action needs rsync)
+      run: |
+        apt update
+        apt install -y rsync
+
+    - name: Deploy to GitHub pages 🚀
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: _book
