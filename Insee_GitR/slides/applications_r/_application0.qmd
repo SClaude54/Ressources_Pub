@@ -1,0 +1,48 @@
+## Application 0 {.smaller}
+
+::: {.panel-tabset}
+
+## {{< fa brands github >}} 
+
+:::{.callout-tip collapse="true" icon=false}
+## Préparation de l'environnement de travail
+
+
+
+::: {.nonincremental}
+1. Créer un dépôt sur `Github` {{< fa brands github >}} en **incluant un fichier `README`** et un `.gitignore` (chercher le modèle `R` dans les suggestions)
+2. Lancer un service `RStudio`. Dans l'onglet de configuration `Git` du service, fixer la durée du `Cache` pour le stockage des identifiants `GitHub` à une valeur suffisamment élevée (conseil: 36000)
+3. Cloner le dépôt distant sur votre environnement local (ici, le `RStudio` du `Datalab`):
+    + `File` → `New project` → `Version Control` → `Git`
+4. Créer un script `get_data.R` en copiant le contenu de [ce fichier](https://raw.githubusercontent.com/InseeFrLab/formation-bonnes-pratiques-git-R/refs/heads/main/R/get_data.R), puis l'exécuter
+5. Créer le script `script.R` dans votre dépôt en copiant le contenu de [ce fichier](https://raw.githubusercontent.com/InseeFrLab/formation-bonnes-pratiques-git-R/refs/heads/main/R/script.R). __Ne l'exécutez pas, c'est l'objet de l'exercice suivant__.
+6. Ajouter la règle "RPindividus*" au fichier `.gitignore`. Que signifie-t-elle ?
+7. *Commit*/*push* les changements (tous les fichiers, y compris ceux que `Git` a ajouté)
+:::
+
+:::
+
+
+## {{< fa brands gitlab >}} Insee
+
+:::{.callout-tip collapse="true" icon=false}
+## Préparation de l'environnement de travail
+
+::: {.nonincremental}
+1. Créer un nouveau dépôt public sur `GitLab` {{< fa brands gitlab >}} en **incluant un fichier `README`**
+2. Lancer un service `RStudio` sur `LS3`.
+   1. Dans l'onglet de configuration `Git` du service, renseigner l'URL du dépôt (méthode HTTPS)
+   2. Dans l'onglet `Ressources de stockage`, augmenter la valeur à 12Go. 
+3. Une fois le service fonctionnel, dans l'explorateur de fichiers, naviguer pour cliquer sur le `README`.
+4. Créer un script `get_data.R` en copiant le contenu de [ce fichier](https://gitlab.insee.fr/ssplab/formation_bonnes_pratiques_git_r/-/blob/main/get_data.R), puis l'exécuter
+5. Créer le script `script.R` dans votre dépôt en copiant le contenu de [ce fichier](https://raw.githubusercontent.com/InseeFrLab/formation-bonnes-pratiques-git-R/main/R/script.R)
+6. Ajouter la règle "individu_reg.*" au fichier `.gitignore` (et d'autres règles, au cas où). Que signifie-t-elle ?
+7. *Commit*/*push* les changements
+:::
+
+:::
+
+
+:::
+
+

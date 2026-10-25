@@ -1,0 +1,7 @@
+## Ressources supplémentaires
+
+- La [documentation `utilitR`](https://book.utilitr.org/) propose plusieurs chapitres sur `Git`
+
+- Cours [Reproductibilité et bonnes pratiques pour les projets de data science](https://ensae-reproductibilite.github.io/website/) de l'`ENSAE`
+
+- La [Bible](https://git-scm.com/book/en/v2) de l'usage de `Git`

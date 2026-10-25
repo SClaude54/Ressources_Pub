@@ -1,0 +1,1 @@
+system("mc cp s3/public/ssplab-formation/RPindividus_24.csv RPindividus_24.csv")

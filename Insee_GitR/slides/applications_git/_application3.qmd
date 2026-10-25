@@ -1,0 +1,21 @@
+## Application 3 {.smaller}
+
+:::{.callout-tip collapse="true" icon=false}
+## Le fichier `.gitignore`
+
+::: {.nonincremental}
+L'objectif de cette application est de créer le fichier `.gitignore`, qui permet de spécifier l'ensemble des fichiers et/ou dossiers que l'on souhaite exclure de l'indexation faite par `Git`. Il doit se situer à la racine du projet.
+
+1. S'il n'existe pas, créer un fichier texte nommé `.gitignore` **à la racine du projet** (attention à ne pas ajouter d'extension au fichier, type `.txt`) 
+2. Créer un dossier `data` à la racine du projet et créer à l'intérieur de celui-ci un fichier `data/raw.csv` avec une ligne de données quelconque
+3. Ajouter une première règle au fichier `.gitignore` qui exclue le dossier `data/`, et vérifier que la règle fonctionne
+4. Ajouter une seconde règle excluant tous les fichiers de type `*.pdf` et `*.html`, et vérifier que la règle fonctionne
+5. Ajouter les règles du [.gitignore standard R](https://github.com/github/gitignore/blob/main/R.gitignore) à la suite des règles définies précédemment
+:::
+
+:::
+
+❓ **Questions** : 
+
+- pourquoi utiliser un `.gitignore` standard lié au langage de programmation ?
+- que se passe-t-il lorsque l'on ajoute au `.gitignore` des fichiers qui ont déjà été *commit* sur le projet Git ?

@@ -1,0 +1,135 @@
+## Application 1 {.smaller .nonincremental}
+
+:::{.callout-tip collapse="true" icon=false}
+## Partie 1 : vérification du bon fonctionnement du code
+
+Un code reproductible est avant toute chose un code fonctionnel !
+
+* Repérez les erreurs qui empêchent le script `script.R` de s’exécuter correctement, et les corriger.
+* Redémarrer votre session avec `Session` > `New Session` (ou <kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>F10</kbd>) et refaire tourner le code de A à Z. Avez-vous une erreur ?
+
+:::
+
+:::{.callout-important collapse="true"}
+## Les pièges que cet exercice vous montre
+
+:::: {.nonincremental}
+- Les fonctions utilisées sans import des _packages_
+- Les chemins et le _working directory_
+- L'ordre des imports
+- Les mauvaises pratiques de gestion de l'environnement (les bonnes pratiques arrivent dans les prochains exercices !)
+::::
+
+:::
+
+
+## Application 1 {.smaller .nonincremental}
+
+:::{.callout-tip collapse="true" icon=false}
+## Partie 2 : premiers standards de qualité
+
+::: {.nonincremental}
+1. Installer les _packages_ `R` [`lintr`](https://github.com/r-lib/lintr) et [`styler`](https://github.com/r-lib/styler)[^install].
+2. Définir le _linter_ à utiliser comme étant de type `tidyverse` avec `lintr::use_lintr(type = "tidyverse")`
+3. Diagnostiquer le script `script.R` avec `lintr::lint("script.R")`.
+    + Comprenez-vous la nature des problèmes détectés par le _linter_?
+4. Appliquer le _formatter_ au `script.R` avec `styler::style_file("script.R")`.
+5. Refaire tourner le _linter_. Il reste encore un certain nombre d'erreurs de formattage, car `styler` est un _formatter_ peu intrusif.
+6. Regarder les problèmes restants repérés par le _linter_, et en corriger quelques uns (un pour chaque type de problème).
+:::
+
+:::
+
+[^install]: Les `install.packages` sont à faire en console et ne doivent pas être mis dans le script (justification dans la prochaine partie de cet exercice). 
+
+## Application 1 {.smaller .nonincremental}
+
+:::{.callout-tip collapse="true" icon=false}
+## Partie 3 : une meilleure gestion des *packages* utilisés
+
+::: {.nonincremental}
+1. Limiter les ambiguités sur les *packages* en utilisant la syntaxe `package::fonction` pour les *packages* rarement utilisés dans le script.
+2. L'installation des *packages* dans un script n'est pas une bonne pratique. Supprimer les instructions correspondantes.
+3. Importer le `tidyverse` au complet est rarement utile. N'importer à la place que les *packages* effectivement utilisés dans le script.
+
+<details>
+<summary>
+
+A propos du `rm(list = ls())` (le supprimer !)
+
+</summary>
+
+Cette commande est une mauvaise pratique. 
+
+On la retrouve encore dans trop de scripts car elle est utilisée pour de mauvaises raisons. Elle ne remets pas à 0 votre environnement: elle supprime juste les données de celui-ci, sans toucher au reste (packages importés, etc.).
+
+Il vaut mieux gérer cela en changeant les options de {{< fa brands r-project >}} puis redémarrer la session {{< fa brands r-project >}} (<kbd>CTRL</kbd>+<kbd>SHIFT</kbd>+<kbd>F10</kbd>)
+
+![](img/rdata-setup.png)
+
+
+</details>
+
+:::
+
+:::
+
+## Application 1 {.smaller .nonincremental}
+
+:::{.callout-tip collapse="true" icon=false}
+## Partie 4 : (auto-)documentation du code
+
+::: {.nonincremental}
+
+L'objectif de cet exercice est de remettre de l'ordre dans le script, cela le rendra bien plus lisible.
+
+1. Déplacer les `library` pour les mettre tous ensemble au début du script.
+2. Le script n'est pas construit dans un ordre logique. Déplacer les parties 
+pour adopter une structure plus lisible : 
+    + Gestion de l'environnement -> Définition de fonctions -> Import des données -> Retraitement des données -> Statistiques descriptives -> Graphiques -> Modélisation
+3. Donner des titres aux parties/sous-parties en utilisant les standards de documentation reconnus par RStudio :
+    + `# TITRE NIVEAU 1 ------------` et `## TITRE NIVEAU 2 ==========`
+
+_Au passage, vous pouvez changer les noms de certains objets pour les rendre moins cryptiques (`df3` n'est pas très clair)._
+:::
+
+:::
+
+## Application 1 {.smaller .nonincremental}
+
+:::{.callout-tip collapse="true" icon=false}
+## Partie 5 : une meilleure gestion des [secrets]{.orange}
+
+::: {.nonincremental}
+Dans cette application, on va explorer deux manières possibles de gérer les secrets proprement.
+
+**Première possibilité** : de manière **interactive**.
+
+1. Repérer le jeton d'API dans le code et le retirer, en le stockant temporairement ailleurs.
+2. Utiliser la fonction [askForPassword](https://rdrr.io/cran/rstudioapi/man/askForPassword.html) du package `rstudioapi`, qui permet de demander à l'utilisateur d'entrer le secret à l'aide d'un pop-up interactif. 
+3. Vérifier le bon fonctionnement de la solution implémentée.
+
+⚠️ Cette solution nécessite l'exécution du code dans un environnement `RStudio`, ce qui implique un usage en *self*.
+
+**Deuxième possibilité** : via les **variables d'environnement**.
+
+4. Supprimer la solution précédente (pop-up interactif) et redémarrer le *kernel R*
+5. Créer un fichier `.Renviron` (voir cette [fiche UtilitR](https://book.utilitr.org/01_R_Insee/Fiche-personnaliser-R.html#le-fichier-.renviron) pour plus d'info sur ce fichier) à la racine du projet et y ajouter une ligne `JETON_API=xxx` en remplaçant `xxx` par la valeur du jeton. 
+6. Importer la valeur du jeton dans une variable `api_token` à l'aide de la fonction [Sys.getenv](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/Sys.getenv).
+7. Vérifier le bon fonctionnement de la solution implémentée.
+8. Vérifier que l'exclusion du `.Renviron` est bien renseigné dans le `.gitignore`. Si ce n'est pas le cas, ajouter la règle et vérifier son bon fonctionnement, puis *commit*/*push*.
+:::
+
+:::
+
+## Checkpoint
+
+::: {.callout-caution .nonincremental}
+## Checkpoint
+
+* Le script [`script.R`](https://raw.githubusercontent.com/InseeFrLab/formation-bonnes-pratiques-git-R/refs/heads/main/R/checkpoints/application1/script.R)
+* Le [`.gitignore`](https://raw.githubusercontent.com/InseeFrLab/formation-bonnes-pratiques-git-R/refs/heads/main/R/checkpoints/application1/.gitignore)
+
+![](checkpoint.jpg){width=40% fig-align="center"}
+
+:::

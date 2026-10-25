@@ -1,0 +1,71 @@
+# III- Le travail collaboratif avec Git
+
+## Outils pour le travail collaboratif
+
+- L'éco-système `Git` [**facilite** le travail collaboratif]{.blue2}
+    - `Git` {{< fa brands git-alt >}} : modèle des [__branches__]{.orange}
+    - `GitHub` {{< fa brands github >}} / `GitLab` {{< fa brands gitlab >}} : [**Issues**, **Pull Requests**, **Forks**]{.orange}
+
+- Ces outils ne remplacent pas une [**bonne définition de l'organisation du travail**]{.orange} en équipe
+    - Choix d'un *workflow*
+    - Droits d'accès
+    - Règles de contribution
+
+
+{{< include applications_git/_application4a.qmd >}}
+
+## Divergence d'historiques : cas simple {auto-animate=true}
+
+![](img/divergence.png)
+
+- Si les deux *commits* concernent des **parties séparées du projet**, un `pull` préalable suffit à résoudre le problème
+    
+
+## Divergence d'historiques : cas simple {auto-animate=true}
+
+![](img/merge_commit_local.png)
+
+- `Git` fusionne les deux *commits* en un [***merge commit***]{.blue2}
+    - Les deux *commits* existent toujours dans l'historique !
+    - L'historique est réconcilié → on peut `push`
+
+## Divergence d'historiques : cas simple {auto-animate=true}
+
+![](img/merge_commit_remote.png)
+
+- Le dépôt local et le dépôt distant sont synchronisés 🤗
+
+{{< include applications_git/_application4b.qmd >}}
+
+{{< include applications_git/_application5a.qmd >}}
+
+## Divergence d'historiques : cas compliqué
+
+![](img/divergence.png)
+
+- Si les deux *commits* modifient les **mêmes parties du projet**, un `pull` ne suffit plus à résoudre le problème
+    - `Git` ne peut pas décider quelle version prioriser 🤔
+    - Il faut lui indiquer comment **résoudre le conflit**
+
+{{< include applications_git/_application5b.qmd >}}
+
+
+## Le modèle des branches {auto-animate=true}
+
+![](https://i.imgflip.com/4ooord.jpg){fig-align="center"}
+
+## Le modèle des branches {auto-animate=true}
+
+![](img/branches.png)
+
+## Exemple d'organisation : le *GitHub flow*
+
+![](img/ghflow.png)
+
+Description plus détaillée : [ici](https://docs.github.com/en/get-started/quickstart/github-flow)
+
+
+
+{{< include applications_git/_application6.qmd >}}
+
+{{< include applications_git/_application7.qmd >}}

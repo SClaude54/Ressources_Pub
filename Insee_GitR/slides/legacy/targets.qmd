@@ -1,0 +1,254 @@
+# V- *Pipelines* de données
+
+## Motivations
+
+- Une analyse de données ou une chaîne de production font intervenir des [**étapes standardisées**]{.orange}
+
+- Ces étapes peuvent être formalisées sous forme d'un [**pipeline (*direct acyclic graph*)**]{.orange}
+
+![](img/dag_argo.png)
+
+[Source](https://medium.com/hashmapinc/building-ml-pipelines-8e27344a42d2)
+
+## Motivations
+
+-  Modéliser ces étapes sous forme de [**pipeline (*direct acyclic graph*)**]{.orange} a plusieurs avantages :
+
+  - [**Découplage**]{.blue2} des différentes étapes
+  - Facilite la [**planification**]{.blue2} du traitement
+  - Facilite la [**prise en main**]{.blue2} du projet par un tiers
+
+
+## Le package `targets`
+
+- `targets` est un *framework* de modélisation de *pipelines* spécifiquement dédié aux projets `R`.
+
+- Deux objectifs majeurs : 
+  1. [**Réduire le coût d'expérimentation**]{.orange} en sauvegardant les résultats intermédiaires (***targets***)
+  2. Garantir la [**reproductibilité**]{.orange} de la chaîne en traçant les changements de ces ***targets***
+
+## Méthode de travail avec `targets` {.smaller}
+
+- On développe dans des scripts :
+    + Fonctions dans un ou plusieurs fichiers dédiés
+    + Chaîne de production dans un fichier `_targets.R`
+
+    
+- On gère l'exécution du _pipeline_ directement dans la console
+    + `tar_visnetwork()` pour inspecter la structure du _pipeline_
+    + `tar_make` pour exécuter la chaine de production
+    
+::: {.callout-note}
+
+Quand on part du chaine de traitement dans un fichier déja existant
+(`script.R` par exemple), il faut faire la transition vers un fichier
+`_targets.R` dont la structure est particulière.
+
+:::
+
+## :one: Un projet minimaliste {.smaller}
+
+- Structure de projet _opinionated_ :
+    + ~~Long script `script.R`~~ `_targets.R`
+    + Chaîne de production: suite d'appels à des fonctions définies dans `R/functions.R`
+
+<br>
+
+```
+├── _targets.R
+├── data
+│   ├── raw
+│   │   └── data.csv
+├── R
+│   └── functions.R
+```
+
+
+<br>
+
+- Nouveau fichier: `_targets.R`
+    + Contrôle le comportement de notre chaine de traitement
+    + Enchaînement d'étapes de transformation de données selon une syntaxe particulière
+
+## :two: Le fichier `_targets.R` {.smaller}
+
+- Le fichier `_targets.R` doit satisfaire plusieurs conditions :
+  1. Charger le _package_ `targets`
+  2. Charger dans l'environnement les fonctions nécessaires
+  3. Déclarer les _packages_ nécessaires aux différentes étapes
+  4. Définir le *pipeline*.
+
+. . . 
+
+```r
+# _targets.R file
+library(targets)
+source("R/functions.R")
+tar_option_set(packages = c("readr", "dplyr", "ggplot2"))
+list(
+  tar_target(file, "data.csv", format = "file"),
+  tar_target(data, get_data(file)),
+  tar_target(model, fit_model(data)),
+  tar_target(plot, plot_model(model, data))
+)
+```
+
+::: {.callout-note}
+Les fonctions `get_data`, `fit_model` et `plot_model` sont définies
+dans 📁 `R/functions.R`
+:::
+
+## :three: Inspecter le *pipeline*
+
+- La fonction `tar_visnetwork` permet de visualiser le *pipeline*
+
+![](img/pipeline.png){height="350" fig-align="center"}
+
+## :three: Exécuter le *pipeline* {.smaller}
+
+- La fonction `tar_make` exécute le *pipeline* défini dans `_targets.R`
+
+![](img/pipeline_run1.png){height="200" fig-align="center"}
+
+- 💡 Lors des exécutions suivantes, `targets` saute automatiquement les étapes qui n'ont pas changé
+
+![](img/pipeline_run2.png){height="150" fig-align="center"}
+
+## Ressources supplémentaires
+
+- La [documentation officielle de `targets`](https://books.ropensci.org/targets/)
+
+- La [fiche UtilitR dédiée à `targets`](https://book.utilitr.org/03_Fiches_thematiques/Fiche_targets)
+
+
+
+
+## Application 5 {.smaller}
+
+:::{.callout-tip collapse="true" icon=false}
+## Modélisation d'un projet sous forme de *pipeline* de données
+
+::: {.nonincremental}
+0. Installer le package `targets`.
+1. Créer un fichier `_targets.R` à la racine du dépôt,
+à partir de [l'exemple](https://books.ropensci.org/targets/walkthrough.html#target-script-file) dans la documentation.
+2. Ajouter `_targets/` dans le `.gitignore`.
+3. Reporter les `library` dans le fichier `R/functions.R` et
+récupérer les noms des packages pour les mettre dans la section `tar_option_set()`.
+4. Ajouter dans `R/functions.R` les fonctions `read_yaml_secret` et `read_from_parquet`:
+
+  ```r
+  read_yaml_secret <- function(path, key) {
+    return(yaml::read_yaml(path)[[key]])
+  }
+  read_from_parquet <- function(path) {
+    df <- arrow::read_parquet(
+      path,
+      col_select  = c(
+        "region", "aemm", "aged", "anai", "catl", "cs1", "cs2", "cs3",
+        "couple", "na38", "naf08", "pnai12", "sexe", "surf", "tp",
+        "trans", "ur"
+      )
+    )
+    return(df)
+  }
+  ```
+:::
+
+:::
+
+## Application 5 {.smaller}
+
+:::{.callout-tip collapse="true" icon=false}
+## Modélisation d'un projet sous forme de *pipeline* de données (suite)
+
+::: {.nonincremental}
+6. En extrayant du contenu de `script.R`, créer les deux premières
+cibles (_targets_) dans `_targets.R`: 
+    + Créer les _targets_ `file_token` et `file_data` stockant les chemins de nos fichiers en entrée
+    + ⚠️ Ne pas oublier l'argument `format = 'file'` dans `tar_target`
+7. Créer les deux cibles suivantes dans `_targets.R`:
+    + Créer `token` et `data` à partir, respectivement, de `read_yaml_secret` et `read_from_parquet`.
+    + Pour `data`, utiliser l'argument `format = 'parquet'` dans `tar_target`.
+7. Visualiser les relations entre objets de notre _pipeline_ en utilisant dans la console `R` la fonction `tar_visnetwork()`.
+8. Exécuter `tar_make()` dans la console et observer le changement d'état avec `tar_visnetwork()`.
+:::
+
+:::
+
+## Application 5 {.smaller}
+
+:::{.callout-tip collapse="true" icon=false}
+## Modélisation d'un projet sous forme de *pipeline* de données (suite)
+
+::: {.nonincremental}
+9. A partir des fonctions suivantes, créer deux nouvelles cibles 
+(`clean_data` et `table_age`) qui automatisent la production
+du tableau `gt`
+
+```r
+retraitement_donnees <- function(df){
+  df <- df |>
+    mutate(aged = as.numeric(aged))
+  df$sexe <- df$sexe |>
+    as.character() |>
+    fct_recode(Homme = "1", Femme = "2")
+  return(df)
+}
+
+
+produce_table_age <- function(df){
+  stats_age <- df |>
+    group_by(decennie = decennie_a_partir_annee(aged)) |>
+    summarise(n())
+  
+  table_age <- gt::gt(stats_age) |>
+    gt::tab_header(
+      title = "Distribution des âges dans notre population"
+    ) |>
+    gt::fmt_number(
+      columns = `n()`,
+      sep_mark = " ",
+      decimals = 0
+    ) |>
+    gt::cols_label(
+      decennie = "Tranche d'âge",
+      `n()` = "Population"
+    )
+  return(table_age)
+}
+```
+
+
+10. En console, visualiser l'état du _pipeline_ avec `tar_visnetwork` puis exécuter `tar_make()`. Analyser la sortie dans la console.
+11. A l'aide de la fonction `tar_read(table_age)`, visualiser la table des âges produite.
+12. Ajouter les commandes suivantes au sein de la fonction `retraitement_donnees` pour 
+la modifier:
+
+```r
+df <- df |>
+  mutate(
+    surf = factor(surf, ordered = TRUE),
+    cs1 = factor(cs1)
+  )
+```
+
+13. Depuis la console, inspecter le _pipeline avec `tar_visnetwork` puis exécuter `tar_make()` pour lancer le *pipeline*. Analyser la sortie.
+14. Si vous avez le temps, continuer à enrichir votre _pipeline_
+:::
+
+:::
+
+:::
+
+## Checkpoint
+
+::: {layout=[30,70]}
+:::{.nonincremental}
+
+- [functions.R](https://raw.githubusercontent.com/InseeFrLab/formation-bonnes-pratiques-git-R/main/R/checkpoints/application5/functions.R)
+- [_targets.R](https://raw.githubusercontent.com/InseeFrLab/formation-bonnes-pratiques-git-R/main/R/checkpoints/application5/_targets.R)
+
+![](checkpoint.jpg){width=60%}
+:::
+:::

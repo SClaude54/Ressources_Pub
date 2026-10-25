@@ -1,0 +1,506 @@
+{{< include applications_r/_application0.qmd >}}
+
+
+# I- Qualité du code
+
+## Enjeux
+
+- D'une vision utilitariste du code à une vision du code comme [**outil de communication**]{.orange}
+
+
+- Favoriser la [**lisibilité**]{.orange} et la [**maintenabilité**]{.orange}
+
+
+- Faciliter la [**réutilisation**]{.orange}
+
+
+- Assurer la [__transparence__]{.orange} méthodologique
+
+
+## Principes généraux
+
+:one: Adopter les [**standards communautaires**]{.orange}
+
+:two: Eviter la [**duplication de code**]{.orange}
+
+:three: [**(Auto)-documenter**]{.orange} son code
+
+:four: Isoler la [**configuration**]{.orange} du code
+
+## :one: Adopter les standards communautaires
+
+> *"Good coding style is like correct punctuation: you can manage without it, butitsuremakesthingseasiertoread"*
+>
+> [Tidyverse Style Guide](https://style.tidyverse.org/)
+
+
+- Respecter les [conventions]{.orange} du langage dans lequel il est rédigé
+
+
+- Il existe un **guide de référence** pour bien coder en `R` : le [Tidyverse style guide](https://style.tidyverse.org/index.html).
+
+
+## :one: Adopter les standards communautaires {.smaller}
+
+Deux outils pratiques aident à respecter les standards :
+
+1. [**_linter_**]{.orange} : programme qui vérifie que le code est __formellement__ conforme à un certain _guidestyle_
+    + signale problèmes formels, sans corriger 
+
+
+2. [**_formatter_**]{.orange} : programme qui reformate un code pour le rendre conforme à un certain _guidestyle_
+    + modifie directement le code
+
+. . .
+
+::: {.callout-tip}
+::: {.nonincremental}
+- [Exemples d’erreurs repérées]{.blue2} par un _linter_ : 
+    + lignes de code trop longues ou mal indentées, parenthèses non équilibrées, noms de fonctions mal construits…
+- [Exemples d’erreurs __non__ repérées]{.blue2} par un _linter_ :
+    + fonctions mal utilisées, arguments mal spécifiés, structure du code incohérente, code insuffisamment documenté…
+:::
+:::
+
+
+## :one: Adopter les standards communautaires {.smaller}
+
+<br>
+
+Dans le cas de {{< fa brands r-project >}} : 
+
+- le [_linter_]{.orange} à utiliser est le _package_ [`lintr`](https://github.com/r-lib/lintr)
+- le [_formatter_]{.orange} à utiliser est le _package_ [`styler`](https://github.com/r-lib/styler).
+    + Existe également le _package_ [`formatR`](https://github.com/yihui/formatR).
+
+## :two: Utiliser des fonctions {.smaller}
+
+::: {.callout-important}
+## Règle d'or
+
+Il faut utiliser une [**fonction**]{.red2} dès qu'on utilise une même
+portion de code plus de deux fois ([**_don't repeat yourself_ (DRY)**]{.red2})
+:::
+
+- [Limite les risques d'erreurs]{.orange} liés aux copier/coller
+- Rend le code [plus lisible]{.orange} et [plus compact]{.orange}
+- [Un seul endroit]{.orange} du code à modifier lorsqu'on souhaite modifier le traitement
+- Facilite la [réutilisation]{.orange} et la [documentation]{.orange} du code !
+
+. . .
+
+::: {.callout-tip}
+## Règles pour écrire des fonctions **pertinentes**
+
+::: {.nonincremental}
+- Une tâche = une fonction
+- Une tâche complexe = un enchaînement de fonctions réalisant chacune une tâche simple
+- Limiter l'utilisation de variables globales.
+:::
+
+:::
+
+## :three: Documenter son code
+
+- Grands principes :
+  - Documenter le [__pourquoi__]{.orange} plutôt que le [__comment__]{.orange}
+  - Privilégier l'[**auto-documentation**]{.orange}
+
+. . .
+
+::: {.callout-tip}
+## Comment bien documenter un script ?
+
+::: {.nonincremental}
+- [**Minimum**]{.orange} 🚦 : commentaire au début du script pour décrire ce qu'il fait
+- [**Bien**]{.orange} 👍 : commenter les parties "délicates" du code
+- [**Idéal**]{.orange} 💪 : documenter ses fonctions avec la syntaxe `roxygen2`.
+:::
+
+:::
+
+## :three: Documenter son code
+
+::: {.callout-tip}
+## L'auto-documentation en pratique
+
+
+👎 La documentation pallie des mauvais nommages
+
+```
+# Utilise string si x est non manquant et non vide
+if (!is.na(x) && nzchar(x)) {
+  use_string(x)
+}
+```
+
+👍 Les nommages suffisent à comprendre le code
+
+```
+x_is_not_empty_string <- (!is.na(x) && nzchar(x))
+if (x_is_not_empty_string) {
+  use_string(x)
+}
+```
+
+:::
+
+## :four: Isoler la configuration du code
+
+- Rappel : on vise une structure [**modulaire**]{.orange}
+
+. . .
+
+![](img/environment_clean.png)
+
+- En pratique : [**isoler**]{.orange} les [**packages**]{.blue2} et les [**secrets**]{.blue2}
+
+## :four: Gestion des packages {.smaller}
+
+- [**Externaliser**]{.orange} l'installation des packages nécessaires
+  - Le code ne doit [**pas modifier l'environnement**]{.blue2}
+  - [**Où ?**]{.blue2} Dans le `README` ou des fichiers spécialisés (`DESCRIPTION` ou `renv.lock`)
+
+- [**Expliciter**]{.orange} l'appel des packages avec la syntaxe `package::fonction()`
+  - Favorise la [**lisibilité**]{.blue2} du code
+  - Limite les risques de [**fonctions "masquées"**]{.blue2}
+
+. . .
+
+:::{.callout-tip}
+## Exemple
+
+::: {.nonincremental}
+- `package1` et `package2` contiennent chacun une fonction appelée `super_fonction`.
+- Si `package2` est chargé après `package1`, alors la fonction de `package1` est automatiquement masquée et `super_fonction` désigne par défaut la fonction de `package2`.
+- Mieux vaut noter `package1::superFonction` et `package2::superFonction`
+:::
+
+:::
+
+## :four: Gestion des secrets
+
+- Les [**secrets**]{.orange} (mots de passe, *tokens*, etc.) sont des [**données sensibles**]{.orange}
+
+- Quelques [**principes de sécurité**]{.orange} essentiels
+  - Utiliser des [***tokens***]{.blue2} plutôt que des mots de passe
+  - Utiliser des [**comptes de service**]{.blue2} (quand c'est possible)
+  - Jamais de [**secrets en clair**]{.blue2} dans le code
+
+- En pratique, deux [**recommendations selon l'usage**]{.orange} 
+  - [**Demander interactivement**]{.blue2} le secret à l'utilisateur
+  - Spécifier des [**variables d'environnement**]{.blue2} via le [fichier .Renviron](https://book.utilitr.org/01_R_Insee/Fiche-personnaliser-R.html#le-fichier-.renviron) (⚠️ à ajouter au `.gitignore`)
+  
+
+
+
+## Ressources supplémentaires
+
+<br>
+
+- Une [présentation](https://jolicode.netlify.app/) de Maëlle Salmon sur le « code beau ».
+- Une [présentation très complète](https://mitmat.github.io/slides/2022-05-26-egu/code-data-open-science.html#1) sur le partage de code et de données avec `R`
+- Une [documentation](https://cran.r-project.org/web/packages/httr/vignettes/secrets.html) (en anglais) sur la gestion des secrets (*tokens*, mots de passe, etc.)
+
+
+{{< include applications_r/_application1.qmd >}}
+
+
+## Bilan
+
+::::: {.columns}
+
+:::: {.column .nonincremental width="60%"}
+
+- Un code mal structuré
+  - Limite la [__lisibilité du projet__]{.blue2}
+  - Est très [__coûteux à maintenir__]{.blue2} (dette technique)
+
+- Les petits gestes peuvent économiser un temps précieux
+
+::::
+
+:::: {.column width="40%"}
+::: {layout="[[-1], [1], [-1]]"}
+![](img/reproducibility-lazy-no-bg.png){fig-align="center"}
+:::
+::::
+
+:::::
+
+
+
+
+
+
+
+
+
+# II- Structure des projets
+
+## Enjeux
+
+1. Favoriser la [**lisibilité**]{.orange} et la [**maintenabilité**]{.orange}
+
+2. Construire des projets [**reproductibles**]{.orange}
+
+## :warning: A ne pas reproduire chez vous
+
+<br>
+
+```
+├── report.Rmd
+├── correlation.png
+├── data.csv
+├── data2.csv
+├── fig1.png
+├── figure 2 (copy).png
+├── report.pdf
+├── partial data.csv
+├── script.R
+└── script_final.R
+```
+
+Source : [eliocamp.github.io](https://eliocamp.github.io/reproducibility-with-r/materials/day1/02-projects/)
+
+## Principes généraux
+
+1. Utiliser les [**projets RStudio**]{.orange}
+
+
+2. Organiser son projet en [**sous-dossiers**]{.orange}
+
+
+3. Donner des [**noms pertinents**]{.orange} aux fichiers
+
+
+4. [**Documenter**]{.orange} son projet
+
+
+5. (Faire de son projet un [**package**]{.orange})
+
+## :one: Utiliser les projets RStudio
+
+- [**Objectif**]{.orange} : favoriser la [**reproductibilité**]{.blue2}
+  - Tous les fichiers nécessaires au projet dans un même dossier
+  - Le dossier contenant le projet RStudio est automatiquement utilisé comme ***working directory***
+  - Utilisation de [**chemins relatifs**]{.blue2} plutôt qu'absolus.
+
+
+- **Bonus** : en utilisant `Git`, on s'assure de toujours travailler dans un projet RStudio !
+
+## :two: Organiser son projet en sous-dossiers
+
+:::{.nonincremental}
+- [**Objectif**]{.orange} : adopter une structure arbitraire, mais [**lisible**]{.blue2} et [**cohérente**]{.blue2}
+
+```
+├── data
+│   ├── raw
+│   │   ├── data.csv
+│   │   └── data2.csv
+│   └── derived
+│       └── partial data.csv
+├── R
+|   ├── script.R
+│   ├── script_final.R
+│   └── report.Rmd
+└── output
+    ├── fig1.png
+    ├── figure 2 (copy).png
+    ├── figure10.png
+    ├── correlation.png
+    └── report.pdf
+```
+:::
+
+## :three: Donner des noms pertinents aux fichiers
+
+:::{.nonincremental}
+- [**Objectif**]{.orange} : [**auto-documenter**]{.blue2} son projet
+
+```
+├── data
+│   ├── raw
+│   │   ├── dpe_logement_202103.csv
+│   │   └── dpe_logement_202003.csv
+│   └── derived
+│       └── dpe_logement_merged_preprocessed.csv
+├── R
+|   ├── preprocessing.R
+│   ├── generate_plots.R
+│   └── report.Rmd
+└── output
+    ├── histogram_energy_diagnostic.png
+    ├── barplot_consumption_pcs.png
+    ├── correlation_matrix.png
+    └── report.pdf
+```
+:::
+
+## :four: Documenter son projet
+
+- Le fichier `README.md`, situé à la racine du projet, est à la fois la **carte d'identité** et la **vitrine du projet**
+
+- Idéalement, il contient :
+  - Une [**présentation**]{.orange} du contexte et des objectifs
+  - Une description de son [**fonctionnement**]{.orange}
+  - Un guide de [**contribution**]{.orange} (*open-source*)
+
+
+- Quelques modèles de `README.md` complets :
+  - [utilitR](https://github.com/InseeFrLab/utilitR/blob/master/README.md)
+  - [DoReMIFaSol](https://github.com/InseeFrLab/DoReMIFaSol)
+
+## :five: Faire de son projet un *package*
+
+- Un *package* est la forme maximale de [**modularité**]{.orange}
+  - Contient des [**fonctions**]{.blue2} rangées dans des [**modules**]{.blue2}
+  - Contient également de la [**documentation**]{.blue2}, des [**tests**]{.blue2}, des (méta-)données... 
+
+- [**Avantages**]{.orange}
+  - Idéal pour favoriser la [**réutilisation**]{.blue2} du code
+  - Des [**outils**]{.blue2} de développement : `devtools` et `usethis`
+
+- [**Inconvénients**]{.orange}
+  - Coût de [**maintenance**]{.blue2} élevé
+
+## Ressources supplémentaires
+
+<br>
+
+- La documentation utilitR sur les [projets RStudio](https://book.utilitr.org/03_Fiches_thematiques/Fiche_rprojects) et les [packages R](https://book.utilitr.org/01_R_Insee/Fiche_installer_packages)
+- La [bible des packages R](https://r-pkgs.org/whole-game.html)
+
+
+{{< include applications_r/_application2.qmd >}}
+
+
+
+
+# III- Formats de données
+
+## Enjeux
+
+- Le choix d'un format de données répond à un [**arbitrage**]{.orange} entre plusieurs critères :
+  - [**Public cible**]{.blue2}
+  - [**Finalité**]{.blue2} (traitement, analyse, diffusion)
+  - [**Volumétrie**]{.blue2}
+  - [**Interopérabilité**]{.blue2}
+
+## Formats traditionnels
+
+- Formats de données adhérents à un langage ([**sas7bdat**]{.orange}, [**RDS**]{.orange}, [**fst**]{.orange}, etc.)
+  - [**Non-interopérables**]{.blue2} -> à éviter !
+
+- Le format [**CSV**]{.orange}
+  - [**Interopérable**]{.blue2} et [**simple**]{.blue2} d'utilisation
+  - Pas de gestion des [**méta-données**]{.blue2}
+  - Peu adapté aux [**données volumineuses**]{.blue2}
+
+## Limites du `CSV`
+
+- Des [**performances limitées**]{.orange}
+  - [**Stockage**]{.blue2} : non-compressé -> [**espace disque élevé**]{.blue2}
+  - [**Lecture**]{.blue2} : "orienté-ligne" -> [**performances faibles**]{.blue2}
+
+. . .
+
+![](img/row-column.png){fig-align="center"}
+
+## Le format `Parquet`
+
+- [**Stockage**]{.orange} :
+    - [**Compression**]{.blue2} : entre 5 et 20 fois plus léger qu'un CSV
+
+. . .
+
+::: {.nonincremental}
+::::: {.callout-note}
+## Exemple: Recensement de la Population
+
+- [Ficher détail](https://www.insee.fr/fr/statistiques/8268848?sommaire=8205966) : 20 millions de lignes, 92 variables
+    - CSV: > 4Go
+    - Parquet: < 500Mo
+:::::
+:::
+
+## Le format `Parquet`
+
+- [**Lecture**]{.orange} :
+    - Jusqu’à 34x plus rapide qu’un CSV
+
+- [**"Orienté colonne"**]{.orange}
+  - Optimisé pour les [**traitements analytiques**]{.blue2}
+  - Limite la quantité de données à mettre en mémoire
+
+. . .
+
+![](img/parquet-read-columns.png){fig-align="center"}
+
+## Le format `Parquet`
+
+- [**Partitionner**]{.orange} les données pour [**optimiser la lecture**]{.blue2}
+
+. . .
+
+![](img/partitions.png){fig-align="center" height="250"}
+
+::: {.nonincremental}
+::::: {.callout-warning}
+## L'art de bien partitionner
+
+- Partitionner par une/des [**variable(s) d'intérêt**]{.blue2}
+
+- [**Eviter**]{.blue2} de créer de [**nombreux petits (< 128Mo) fichiers**]{.blue2}
+
+:::::
+:::
+
+## Le format `Parquet`
+
+- Gestion native des [**méta-données**]{.orange}
+  - Définition automatique d'un [**schéma**]{.blue2} (noms, types)
+  - Mise à disposition plus [**robuste**]{.blue2}
+
+- [**Interopérable**]{.orange}
+
+- [**Open-source**]{.orange}
+
+## Le format `Parquet`
+
+- Deux *frameworks* de référence : [Arrow](https://book.utilitr.org/03_Fiches_thematiques/Fiche_arrow.html) et [DuckDB](https://book.utilitr.org/03_Fiches_thematiques/Fiche_duckdb.html)
+  - Orientation [**fichier**]{.blue2} (`Arrow`) VS orientation [**BDD**]{.blue2} (`DuckDB`)
+  - Très bonne [**intégration**]{.blue2} avec le `tidyverse`
+ 
+- [**Traitement en-mémoire optimisé**]{.orange}
+  - [**Orientés-colonne**]{.blue2}
+  - [***Lazy evaluation***]{.blue2}
+
+. . .
+
+::: {.nonincremental}
+::::: {.callout-note}
+## Exemple d'une requête *lazy*
+
+```R
+n_logements_depcom <- achille |> 
+  filter(dep %in% c("01", "02", "03")) |>  # Récupère seulement les données nécessaires
+  select(idlogement, depcom) |>  # Récupère seulement les colonnes nécessaires
+  group_by(depcom) |>
+  summarise(n_logements = n()) |>  
+  collect()  # Les calculs ne sont effectués qu'à cette étape !
+```
+
+:::::
+:::
+
+## Le format `Parquet`
+
+- `Parquet` gagne sur tous les tableaux
+
+. . .
+
+![](img/tableau-perf-parquet.png){fig-align="center" height="500"}
+
+{{< include applications_r/_application3.qmd >}}

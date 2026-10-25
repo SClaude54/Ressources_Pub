@@ -1,0 +1,14 @@
+## Application 4 (suite) {.smaller}
+
+:::{.callout-tip collapse="true" icon=false}
+## Divergence d'historiques : cas simple
+
+::: {.nonincremental}
+7. Pour ceux dont le `push` a été refusé, effectuer un `pull` des modifications distantes via l'interface `RStudio`
+8. Effectuer à nouveau un `push` de vos modifications locales
+9. Les derniers membres du groupe devront refaire les étapes précédentes, potentiellement plusieurs fois, pour pouvoir `push` leurs modifications locales
+:::
+
+:::
+
+❓ **Question** : que se serait-il passé si les différents membres du groupe avaient effectué leurs modifications sur un seul et même fichier ?

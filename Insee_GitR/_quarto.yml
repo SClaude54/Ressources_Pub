@@ -1,0 +1,34 @@
+project:
+  type: website
+  render:
+    - /slides/formation_light.qmd
+    - /slides/formation_full.qmd
+    - /slides/formation_manageurs.qmd
+    - index.qmd
+    - "/cards/**/*.qmd"
+
+website:
+  title: "Formation aux bonnes pratiques `Git` et `R`"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: slides/light.html
+        text: Version courte
+      - href: slides/complete.html
+        text: Version longue
+      - icon: github
+        href: https://github.com/InseeFrLab/formation-bonnes-pratiques-git-R
+    background: "#4758AB"
+  twitter-card:
+    image: /cards/version-light/cheetah.png
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+filters:
+   - include-code-files
+
