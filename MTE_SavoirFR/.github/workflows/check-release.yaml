@@ -1,0 +1,50 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+name: R-CMD-check
+
+jobs:
+  R-CMD-check:
+    runs-on: macOS-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          r-version: 'release'
+      
+      - name: Install dependencies
+        run: |
+          install.packages("remotes")
+          remotes::install_github("hughjonesd/santoku")
+          remotes::install_deps(dependencies = TRUE)
+          install.packages("rcmdcheck")
+        shell: Rscript {0}
+
+      - name: Install police Marianne
+        run: |
+          systemfonts::register_font(name = "Marianne extrabold", system.file("resources/fonts/marianne/truetype/Marianne-ExtraBold.ttf", package = "gouvdown.fonts")) 
+          systemfonts::register_font(name = "Marianne", system.file("resources/fonts/marianne/truetype/Marianne-Regular.ttf", package = "gouvdown.fonts")) 
+          systemfonts::register_font(name = "Marianne light", system.file("resources/fonts/marianne/truetype/Marianne-Light.ttf", package = "gouvdown.fonts")) 
+          systemfonts::register_font(name = "Marianne bold", system.file("resources/fonts/marianne/truetype/Marianne-Bold.ttf", package = "gouvdown.fonts")) 
+          gouvdown::check_fonts_in_r()
+        shell: Rscript {0}
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--no-build-vignettes", "--ignore-vignettes")'
+          error-on: '"error"'
+      
+

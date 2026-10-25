@@ -1,0 +1,15 @@
+^savoirfR\.Rproj$
+^\.Rproj\.user$
+^devstuff_history\.R$
+^data-raw$
+^how_to\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.travis\.yml$
+^\.github$
+^README\.Rmd$
+^dev$
+^apt-packages.txt$
+^inst/rstudio/templates/project/ressources/m6/corrections/cheesedown/
+^inst/rstudio/templates/project/ressources/m6/corrections/cheesedown.*/

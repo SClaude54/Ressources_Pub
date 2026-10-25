@@ -1,0 +1,63 @@
+---
+title: "Exercices parcours R module 2 : datapréparation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Exercices parcours R module 2 : datapréparation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(savoirfR)
+```
+
+# Exercice 1 : Les données mensuelles sitadel (chap 5.5.2)
+
+```{r mod2_exo1, child=charge_exo("m2", "exo1.rmd"), echo=FALSE}
+```
+
+Aperçu de la solution
+![](M2_exercice1_enonce_v3.png) 
+
+# Exercice 2 (chap 5.5.3)
+
+```{r mod2_exo2, child=charge_exo("m2", "exo2.rmd"), echo=FALSE}
+```
+
+# Exercice 3 (chap 5.9.1)
+ 
+```{r mod2_exo3, child=charge_exo("m2", "exo3.rmd"), echo=FALSE}
+```
+     
+
+# Exercice 4 (chap 5.9.2)
+
+```{r mod2_exo4, child=charge_exo("m2", "exo4.rmd"), echo=FALSE}
+```
+
+
+
+# Exercice 5 (chap 6.1)
+
+![](MCD_pesticides.png)
+
+```{r mod2_exo5, child=charge_exo("m2", "exo5.rmd"), echo=FALSE}
+```
+
+
+# Exercice 6 (chap 8)
+
+```{r mod2_exo6, child=charge_exo("m2", "exo6.rmd"), echo=FALSE}
+```
+
+
+          
+
+

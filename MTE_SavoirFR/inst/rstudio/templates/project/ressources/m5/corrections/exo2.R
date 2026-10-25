@@ -1,0 +1,35 @@
+# ---
+# title: "Exercice 2 - module 5"
+# --- 
+# A partir des données de la table ODD_graphique1 (ODD.RData), reprendre le nuage de point obtenu à partir des données ODD :
+# taux de mortalité maternelle (`Maternal_mortality_ratio`) en fonction du produit intérieur brut (`Gross_Domestic_Product_GDP`) (Chapitre 5.1)
+# En modifier le thème :
+# -  insérer un titre de couleur, en gras, centré par rapport au graphe,
+# -  indiquer la source (ODD) et modifier sa taille,
+# -  changer les titres des axes et leurs tailles,
+# -  modifier la couleur de fond du graphe,
+# -  modifier le type de quadrillage (pointillés).
+load("extdata/ODD.RData")
+
+
+library(ggplot2)
+library(dplyr)
+
+ggplot(ODD_graphique1) +
+  geom_point(aes(x = log(Gross_Domestic_Product_GDP),
+                 y = log(Maternal_mortality_ratio),
+                 color = Continent)) +
+  labs(title = "Croisement du PIB avec le taux de mortalité maternelle", y = "Taux de mortalité maternelle", 
+       x = "Produit Intérieur Brut", caption = "Source: ODD") +
+  theme(plot.title = element_text(size = 15,
+                                  face = "bold",
+                                  color = "blue",
+                                  hjust = 0.5),
+        plot.caption = element_text(size = 15),
+        axis.title.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        panel.background = element_rect(fill = "lightblue", colour = "lightblue", size = 0.5),
+        panel.grid.major = element_line(size = 0.5, linetype = "dotted"),
+        panel.grid.minor = element_line(size = 0.5, linetype = "dotted"))
+
+

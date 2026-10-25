@@ -1,0 +1,86 @@
+Package: savoirfR
+Title: Exercices for mtes-mctrct r course modules
+Version: 0.0.0.9012
+Authors@R: c(
+    person(given = "Murielle",
+           family = "Lethrosne",
+           role = c("aut"),
+           email = "murielle.lethrosne@developpement-durable.gouv.fr",
+           comment = c(ORCID = "YOUR-ORCID-ID")),
+    person(given = "Maël",
+           family = "Theuliere",
+           role = c("aut"),
+           email = "mael.theuliere@developpement-durable.gouv.fr",
+           comment = c(ORCID = "0000-0002-5146-699X")),
+    person(given = "Marouane",
+           family = "Zellou",
+           role = c("aut"),
+           email = "marouane.zellou@developpement-durable.gouv.fr"),
+    person(given = "Bruno",
+           family = "Terseur",
+           role = c("aut"),
+           email = "bruno.terseur@developpement-durable.gouv.fr"),
+    person(given = "Jean-Daniel",
+           family = "LOMENEDE",
+           role = c("aut"),
+           email = "jean-daniel.lomenede@seine-maritime.gouv.fr"),
+    person(given = "Juliette",
+           family = "Engelaere-Lefebvre",
+           role = c("aut", "cre"),
+           email = "juliette.engelaere-lefebvre@developpement-durable.gouv.fr")
+           )
+Description: Ce package regroupe l ensemble des exercices des differents modules du parcours de formation parcours-r.
+URL: https://github.com/MTES-MCT/savoirfR
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.3
+Imports:
+    dplyr,
+    fs,
+    knitr,
+    magrittr,
+    rlang,
+    stringr,
+    utils
+Suggests:
+    class,
+    COGiter,
+    cowplot,
+    crosstalk,
+    forcats,
+    gganimate,
+    ggiraph,
+    gifski,
+    ggpattern,
+    ggplot2,
+    gouvdown,
+    gouvdown.fonts,
+    here,
+    hrbrthemes,
+    httr,
+    jsonlite,
+    kableExtra,
+    lubridate,
+    magick,
+    mapfactory,
+    plotly,
+    RcppRoll,
+    readxl,
+    rmarkdown,
+    sf,
+    shiny,
+    systemfonts,
+    tidyr,
+    tidyverse,
+    tidytuesdayR,
+    tinytex,
+    units,
+    variousdata
+VignetteBuilder: knitr
+Remotes: 
+    maeltheuliere/COGiter,
+    MaelTheuliere/variousdata,
+    spyrales/gouvdown,
+    spyrales/gouvdown.fonts,
+    git::https://gitlab-forge.din.developpement-durable.gouv.fr/dreal-pdl/csd/mapfactory.git@main

@@ -1,0 +1,51 @@
+---
+title: "Exercices parcours R module 1 : introduction à R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Exercices parcours R module 1 : introduction à R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, message=FALSE, warning=FALSE}
+library(savoirfR)
+```
+
+# Premier exercice
+
+```{r mod1_exo1, child=charge_exo("m1", "exo1.rmd"), echo=FALSE}
+
+```
+
+# Importer les données et premier coup d’oeil 
+
+```{r mod1_exo2, child=charge_exo("m1", "exo2.rmd"), echo=FALSE}
+
+```
+
+# Créer, filtrer, sélectionner
+
+```{r mod1_exo3, child=charge_exo("m1", "exo3.rmd"), echo=FALSE}
+
+```
+
+# Calcul de statistiques
+
+```{r mod1_exo4, child=charge_exo("m1", "exo4.rmd"), echo=FALSE}
+
+``` 
+ 
+# Créer des graphiques
+
+```{r mod1_exo5, child=charge_exo("m1", "exo5.rmd"), echo=FALSE}
+
+```
+
+
